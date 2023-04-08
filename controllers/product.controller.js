@@ -14,6 +14,18 @@ exports.getAll = asyncHandler(async (req, res) => {
 });
 
 exports.createOne = asyncHandler(async (req, res) => {
+  if (req.files) {
+    let imagesName = [];
+    req.files.images.forEach((img) => {
+      imagesName.push(img.filename);
+    });
+    req.body.images = imagesName;
+    if(req.files.imageCover != undefined){
+      req.body.imageCover = req.files.imageCover[0].filename;
+    } else {
+      req.body.imageCover = imagesName[0]
+    }
+  }
   const product = await Product.create({
     ...req.body,
     creator: req.user.id,
@@ -35,14 +47,16 @@ exports.updateOne = asyncHandler(async (req, res) => {
   let product;
   if (req.user.role != "admin") {
     product = await Product.findOneAndUpdate(
-      {_id: req.params.id, creator: req.user.id},
+      { _id: req.params.id, creator: req.user.id },
       req.body,
       {
         new: true,
       }
     );
-  }else {
-    product = await Product.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  } else {
+    product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
   }
   if (!product)
     throw new ApiError(
@@ -57,9 +71,10 @@ exports.updateOne = asyncHandler(async (req, res) => {
 exports.deleteOne = asyncHandler(async (req, res) => {
   let product;
   if (req.user.role != "admin") {
-    product = await Product.findByIdAndDelete(
-      { _id: req.params.id, creator: req.user.id }
-    );
+    product = await Product.findByIdAndDelete({
+      _id: req.params.id,
+      creator: req.user.id,
+    });
   } else {
     product = await Product.findByIdAndDelete(req.params.id);
   }

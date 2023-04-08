@@ -2,11 +2,16 @@ const asyncHandler = require("express-async-handler");
 const Category = require("../models/category.model");
 const ApiError = require("../utils/apiError");
 const slugify = require("slugify");
-const ApiFeature = require("../utils/apiFeatures")
+const ApiFeature = require("../utils/apiFeatures");
 
 exports.getAll = asyncHandler(async (req, res) => {
-  const feature = new ApiFeature(Category.find(), req.query).fields().filter().paginate().search().sort()
-  const category = await feature.query
+  const feature = new ApiFeature(Category.find(), req.query)
+    .fields()
+    .filter()
+    .paginate()
+    .search()
+    .sort();
+  const category = await feature.query;
   if (!category.length) throw new ApiError("No data to show", 404);
   res
     .status(200)
@@ -21,6 +26,10 @@ exports.getOne = asyncHandler(async (req, res) => {
 });
 
 exports.createOne = asyncHandler(async (req, res) => {
+  console.log(req.file);
+  if (req.file) {
+    req.body[req.file.fieldname] = req.file.filename;
+  }
   const category = await Category.create({
     ...req.body,
     creator: req.user.id,

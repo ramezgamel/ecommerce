@@ -36,6 +36,9 @@ exports.deleteOne = asyncHandler(async (req, res) => {
 });
 
 exports.updateProfile = asyncHandler(async (req, res) => {
+  if (req.file) {
+    req.body.profileImg = req.file.filename;
+  }
   const user = await User.findById(req.user.id).select("+password");
   if (!user) throw new ApiError("Invalid ID.", 401);
   const availableUpdate = [

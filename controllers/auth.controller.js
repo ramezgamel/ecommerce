@@ -10,6 +10,9 @@ const signJwt = (id) => {
 };
 
 exports.register = asyncHandler(async (req, res) => {
+  if(req.file){
+    req.body.profileImg = req.file.filename
+  }
   const user = await User.create({ ...req.body });
   const token = signJwt(user._id);
   res.status(201).json({

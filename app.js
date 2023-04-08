@@ -1,6 +1,7 @@
 const express = require("express");
 const globalError = require("./middleware/globalError");
 const ApiError = require("./utils/apiError");
+const path = require('path')
 
 //============== MiddleWares ====================
 const cors = require("cors");
@@ -12,7 +13,7 @@ if (process.env.NODE_ENV == "development") {
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.json());
-app.use(express.static("./public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 //==================== Routes =====================
 const categoryRoutes = require("./routes/category.routes");

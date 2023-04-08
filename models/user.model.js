@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema(
     },
     profileImg: {
       type: String,
+      default: "default.jpeg"
     },
     role: {
       type: String,
@@ -41,11 +42,11 @@ const userSchema = new mongoose.Schema(
     passwordChangedAtAt: Date,
     passwordResetToken: String,
     passwordResetExpire: Date,
-    active:{
-      type:Boolean,
+    active: {
+      type: Boolean,
       default: true,
-      select: false
-    }
+      select: false,
+    },
   },
   { timestamps: true }
 );
@@ -63,10 +64,10 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-userSchema.pre(/^find/, function(next) {
-  this.find({active: {$ne: false}})
-  next()
-})
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
+});
 
 userSchema.methods.checkPass = async function (clientPass, hashedPass) {
   return await bcrypt.compare(clientPass, hashedPass);
