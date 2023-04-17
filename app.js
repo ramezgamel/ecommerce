@@ -1,7 +1,7 @@
 const express = require("express");
 const globalError = require("./middleware/globalError");
 const ApiError = require("./utils/apiError");
-const path = require('path')
+const path = require("path");
 
 //============== MiddleWares ====================
 const cors = require("cors");
@@ -20,10 +20,12 @@ const categoryRoutes = require("./routes/category.routes");
 const productsRoutes = require("./routes/product.routes");
 const userRoutes = require("./routes/user.routes");
 const authRoutes = require("./routes/auth.routes");
+const checkOutRoutes = require("./routes/checkOut.routes");
 app.use("/categories", categoryRoutes);
 app.use("/products", productsRoutes);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
+app.use("/checkOut", checkOutRoutes);
 
 //============== Routes errors handling ==============
 app.all("*", (req, res, next) => {
@@ -34,6 +36,4 @@ app.all("*", (req, res, next) => {
 //============== Global errors handling ==============
 app.use(globalError);
 
-
-
-module.exports = app
+module.exports = app;

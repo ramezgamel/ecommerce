@@ -1,28 +1,19 @@
 const router = require("express").Router();
 const controller = require("../controllers/product.controller");
 const auth = require("../middleware/auth.middleware");
-const upload = require("../middleware/upload")
+const upload = require("../middleware/upload");
 
-router
-  .route("/")
-  .get(auth.protect, controller.getAll)
-  .post(
-    upload.fields([
-      { name: "images", maxCount: 4 },
-      { name: "imageCover", maxCount: 1 },
-    ]),
-    auth.protect,
-    auth.restrictTo("admin", "seller"),
-    controller.createOne
-  );
-router
-  .route("/:id")
-  .get(auth.protect, controller.getOne)
-  .patch(auth.protect, auth.restrictTo("admin", "seller"), controller.updateOne)
-  .delete(
-    auth.protect,
-    auth.restrictTo("admin", "seller"),
-    controller.deleteOne
-  );
+router.get("/", controller.getAll);
+router.get("/:id", controller.getOne);
+router.use(auth.protect, auth.restrictTo("admin", "seller"));
+router.delete("/:id", controller.deleteOne);
+router.use(
+  upload.fields([
+    { name: "images", maxCount: 4 },
+    { name: "imageCover", maxCount: 1 },
+  ])
+);
+router.post("/", controller.createOne);
+router.patch("/:id", controller.updateOne);
 
 module.exports = router;
