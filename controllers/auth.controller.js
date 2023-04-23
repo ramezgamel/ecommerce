@@ -10,11 +10,11 @@ const signJwt = (id) => {
 };
 
 exports.register = asyncHandler(async (req, res) => {
-  if(req.file){
-    req.body.profileImg = req.file.filename
+  if (req.file) {
+    req.body.profileImg = req.file.filename;
   }
   const user = await User.create({ ...req.body });
-  await new sendEmail(user, null).sendWelcome()
+  await new sendEmail(user, null).sendWelcome();
   const token = signJwt(user._id);
   res.status(201).json({
     status: "success",
@@ -45,14 +45,8 @@ exports.forgetPassword = asyncHandler(async (req, res) => {
   const resetURL = `${req.protocol}://${req.get(
     "host"
   )}/auth/resetPassword/${resetToken}`;
-  // const message = `Forgot your password? Submit a PATCH request with your new password and password confirm to: ${resetURL}.\n if you didn't forget your password, please ignore this message.`;
   try {
-    // await sendEmail({
-    //   mail: user.email,
-    //   subject: "Your password reset token valid for 5min.",
-    //   message,
-    // });
-    await new sendEmail(user, resetURL).sendPasswordReset();
+    await new sendEmail(user).sendPasswordReset(resetURL);
     res.status(200).json({
       status: "success",
       message: "Get message in mail",
